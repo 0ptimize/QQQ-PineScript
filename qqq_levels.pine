@@ -1,0 +1,33 @@
+//@version=6
+// QQQ Dealer-State Levels — Maneki
+// Structural reference levels: gamma flip, call/put walls, and the 1-week expected-move band.
+// These are CONTEXT (market-structure magnets/bounds), NOT trade signals.
+// Data is EOD only (updates once per day, after the prior close) via Pine Seeds.
+indicator("QQQ Dealer Levels (Maneki)", overlay = true)
+
+// NOTE: confirm the exact source string after TradingView Pine Seeds onboarding.
+// It is typically "seed_<github_user>_<repo>".
+SRC = "seed_0ptimize_QQQ-PineScript"
+
+flip  = request.seed(SRC, "QQQ_FLIP",     close)
+cwall = request.seed(SRC, "QQQ_CALLWALL", close)
+pwall = request.seed(SRC, "QQQ_PUTWALL",  close)
+emhi  = request.seed(SRC, "QQQ_EM_HI",    close)
+emlo  = request.seed(SRC, "QQQ_EM_LO",    close)
+
+plot(flip,  "Gamma Flip", color = color.orange,              linewidth = 2, style = plot.style_stepline)
+plot(cwall, "Call Wall",  color = color.new(color.green, 0), linewidth = 2, style = plot.style_stepline)
+plot(pwall, "Put Wall",   color = color.new(color.red, 0),   linewidth = 2, style = plot.style_stepline)
+pHi = plot(emhi, "EM High", color = color.new(color.gray, 40), linewidth = 1, style = plot.style_stepline)
+pLo = plot(emlo, "EM Low",  color = color.new(color.gray, 40), linewidth = 1, style = plot.style_stepline)
+fill(pHi, pLo, color = color.new(color.blue, 92), title = "Expected-move band")
+
+// Right-edge labels for the three key levels
+var label lFlip = na
+var label lCw = na
+var label lPw = na
+if barstate.islast
+    label.delete(lFlip), label.delete(lCw), label.delete(lPw)
+    lFlip := label.new(bar_index + 2, flip,  "Flip "  + str.tostring(flip,  format.mintick), style = label.style_label_left, color = color.new(color.orange, 20), textcolor = color.white, size = size.small)
+    lCw   := label.new(bar_index + 2, cwall, "CWall " + str.tostring(cwall, format.mintick), style = label.style_label_left, color = color.new(color.green, 20),  textcolor = color.white, size = size.small)
+    lPw   := label.new(bar_index + 2, pwall, "PWall " + str.tostring(pwall, format.mintick), style = label.style_label_left, color = color.new(color.red, 20),    textcolor = color.white, size = size.small)

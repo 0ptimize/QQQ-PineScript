@@ -1,0 +1,31 @@
+//@version=6
+// QQQ Dealer-State Levels — MANUAL input version (Maneki)
+// Use this NOW (no Pine Seeds onboarding needed): paste into TradingView's Pine editor,
+// add to your QQQ chart, then update the level inputs each day from the Maneki dashboard.
+// Switch to qqq_levels.pine (the request.seed version) once Seeds onboarding is approved.
+//
+// These levels are market-structure CONTEXT (magnets / bounds), NOT trade signals.
+indicator("QQQ Dealer Levels — Manual (Maneki)", overlay = true)
+
+g = "Levels — update daily from the Maneki dashboard"
+flip  = input.float(741.70, "Gamma Flip",   group = g, step = 0.01)
+cwall = input.float(800.00, "Call Wall",    group = g, step = 0.01)
+pwall = input.float(630.00, "Put Wall",     group = g, step = 0.01)
+emhi  = input.float(762.62, "EM High (1w)", group = g, step = 0.01)
+emlo  = input.float(718.62, "EM Low (1w)",  group = g, step = 0.01)
+
+plot(flip,  "Gamma Flip", color = color.orange,              linewidth = 2, style = plot.style_stepline)
+plot(cwall, "Call Wall",  color = color.new(color.green, 0), linewidth = 2, style = plot.style_stepline)
+plot(pwall, "Put Wall",   color = color.new(color.red, 0),   linewidth = 2, style = plot.style_stepline)
+pHi = plot(emhi, "EM High", color = color.new(color.gray, 40), linewidth = 1, style = plot.style_stepline)
+pLo = plot(emlo, "EM Low",  color = color.new(color.gray, 40), linewidth = 1, style = plot.style_stepline)
+fill(pHi, pLo, color = color.new(color.blue, 92), title = "Expected-move band")
+
+var label lFlip = na
+var label lCw = na
+var label lPw = na
+if barstate.islast
+    label.delete(lFlip), label.delete(lCw), label.delete(lPw)
+    lFlip := label.new(bar_index + 2, flip,  "Flip "  + str.tostring(flip,  format.mintick), style = label.style_label_left, color = color.new(color.orange, 20), textcolor = color.white, size = size.small)
+    lCw   := label.new(bar_index + 2, cwall, "CWall " + str.tostring(cwall, format.mintick), style = label.style_label_left, color = color.new(color.green, 20),  textcolor = color.white, size = size.small)
+    lPw   := label.new(bar_index + 2, pwall, "PWall " + str.tostring(pwall, format.mintick), style = label.style_label_left, color = color.new(color.red, 20),    textcolor = color.white, size = size.small)

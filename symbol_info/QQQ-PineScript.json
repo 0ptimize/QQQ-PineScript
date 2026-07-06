@@ -1,0 +1,5 @@
+{
+  "symbol": ["QQQ_FLIP", "QQQ_CALLWALL", "QQQ_PUTWALL", "QQQ_EM_HI", "QQQ_EM_LO"],
+  "description": ["QQQ gamma flip (dealer)", "QQQ call wall", "QQQ put wall", "QQQ expected-move upper 1wk", "QQQ expected-move lower 1wk"],
+  "pricescale": 100
+}
