@@ -27,7 +27,9 @@ var label lFlip = na
 var label lCw = na
 var label lPw = na
 if barstate.islast
-    label.delete(lFlip), label.delete(lCw), label.delete(lPw)
+    label.delete(lFlip)
+    label.delete(lCw)
+    label.delete(lPw)
     lFlip := label.new(bar_index + 2, flip,  "Flip "  + str.tostring(flip,  format.mintick), style = label.style_label_left, color = color.new(color.orange, 20), textcolor = color.white, size = size.small)
     lCw   := label.new(bar_index + 2, cwall, "CWall " + str.tostring(cwall, format.mintick), style = label.style_label_left, color = color.new(color.green, 20),  textcolor = color.white, size = size.small)
     lPw   := label.new(bar_index + 2, pwall, "PWall " + str.tostring(pwall, format.mintick), style = label.style_label_left, color = color.new(color.red, 20),    textcolor = color.white, size = size.small)
