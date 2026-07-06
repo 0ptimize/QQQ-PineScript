@@ -95,12 +95,16 @@ def main():
         print(f"[publish] {sym} {latest} = {float(val):.2f}")
     if PUSH:
         subprocess.run(["git", "-C", REPO, "add", "data/"], check=True)
-        r = subprocess.run(["git", "-C", REPO, "commit", "-m", f"levels {latest}"])
-        if r.returncode == 0:
+        subprocess.run(["git", "-C", REPO, "commit", "-m", f"levels {latest}"])  # may be a no-op
+        # Always push when the local branch is ahead of origin — so a previously
+        # failed push (e.g. auth not yet set) is retried on the next run.
+        ahead = subprocess.run(["git", "-C", REPO, "rev-list", "--count", "origin/main..HEAD"],
+                               capture_output=True, text=True).stdout.strip()
+        if ahead and ahead != "0":
             subprocess.run(["git", "-C", REPO, "push"], check=True)
-            print(f"[publish] pushed levels {latest}")
+            print(f"[publish] pushed ({ahead} commit(s) ahead) — latest {latest}")
         else:
-            print("[publish] nothing to commit (chain not advanced)")
+            print("[publish] up to date with origin (nothing to push)")
 
 
 if __name__ == "__main__":
